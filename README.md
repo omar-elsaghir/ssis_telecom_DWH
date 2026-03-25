@@ -46,36 +46,6 @@ Handling messy data is critical in telecom datasets:
 
 ---
 
-## 💡 Troubleshooting & Development Notes
-
-During the development of this pipeline, several environment and version control challenges were resolved:
-
-### 1. Visual Studio UI Rendering (White Text Bug)
-If you experience an issue where Data Flow Path labels (like row counts) appear as unreadable white text on a light background:
-* Navigate to **Tools > Options > Environment > Fonts and Colors**.
-* Select **Business Intelligence Designers** from the dropdown.
-* Change the **Data Flow Path Label** foreground to Black.
-
-![Visual Studio UI Fix](images/image_a59b41.png)
-
-### 2. Git Merge Conflicts & SSIS Files
-SSIS projects generate many background XML and caching files that can cause severe Git conflicts when pulling or merging branches. 
-
-![Git Conflict Resolution](images/image_a83e9a.png)
-*Resolving unmerged changes by selecting 'Keep Local' for `.params` and `.database` files.*
-
-**Fixing the "Permission Denied" Error during Push:**
-Visual Studio actively locks files inside the hidden `.vs` folder. Trying to commit these via Git will result in a fatal `Permission denied` error.
-1. Close Visual Studio entirely to release the file locks.
-2. Delete the hidden `.vs` folder in the project directory.
-3. Re-open Visual Studio, commit, and push.
-
-![Git Permission Error](images/image_a85564.png)
-
-**Best Practice Applied:** A `.gitignore` file has been implemented in this repository to automatically ignore `.vs/`, `*.user`, and `/bin/` directories, preventing future tracking conflicts.
-
----
-
 ## 📂 Repository Structure
 ```text
 📦 ssis_telecom_DWH
