@@ -13,7 +13,7 @@ The project emphasizes robust error handling, ensuring that malformed data (like
 
 ## 🏗️ ETL Architecture & Data Flow
 
-The core of the SSIS package is built around a **Foreach Loop Container** that iterates through a designated "Source Files" directory, picking up new `.csv` batch files and processing them through the following Data Flow:
+The core of the SSIS package is built around a **Foreach Loop Container** that iterates through a designated `Source Files` directory, picking up new `.csv` batch files and processing them through the following Data Flow:
 
 1.  **Flat File Source:** Reads the incoming CSV data. Configured to handle large telecom identifiers (using `DT_I8` / BigInt) to prevent data overflow errors.
 2.  **Lookup Transformation:** Validates incoming records against existing Dimension tables (e.g., IMSI or cell tower data) using a cached lookup.
@@ -21,8 +21,17 @@ The core of the SSIS package is built around a **Foreach Loop Container** that i
 4.  **OLE DB Destinations:** * *Match Output:* Successfully validated rows are inserted into `Fact_Transaction`.
     * *No Match / Error Output:* Rows failing conversion or lookup are cleanly redirected to `error_destination_output`.
 
-![SSIS Data Flow](https://github.com/omar-elsaghir/ssis_telecom_DWH/blob/master/screenshots/Screenshot%202026-03-25%20172423.png)
+### Data Flow Design
+![SSIS Data Flow Design](images/Screenshot%202026-03-25%20172423.png)
 *Above: The core Data Flow showing the Lookup, Derived Column, and OLE DB Destination components.*
+
+### Error Handling Configuration
+![Error Output Configuration](images/Screenshot%202026-03-25%20175300.png)
+*Above: Configuring component error outputs to redirect rows instead of failing the package.*
+
+### Successful Execution
+![SSIS Package Success](images/Screenshot%202026-03-25%20180623.png)
+*Above: A successful run of the Foreach Loop Container, processing multiple batches and safely redirecting malformed rows.*
 
 ---
 
@@ -39,10 +48,42 @@ Before running the SSIS package, the target data warehouse schema must be create
 2. Configure the enumerator to scan the `Source Files` folder for `*.csv`.
 3. Map the File Path to a variable (e.g., `User::CurrentFilePath`) so the Flat File Connection Manager updates dynamically for each file.
 
-### Step 3: Data Flow & Error Handling
-Handling messy data is critical in telecom datasets:
-* **Handling Nulls & Bad Formats:** The Flat File Source is configured to redirect `Error` and `Truncation` rows (such as empty `id` columns) to the error table rather than failing the component (`Error Code 0xC02020A1`).
-* **Lookup Management:** The Lookup component is set to **"Redirect rows to no match output"** instead of the default "Fail Component". This ensures that transactions lacking a dimensional match are safely quarantined for later analysis.
+---
+
+## 💡 Troubleshooting & Development Notes
+
+During the development of this pipeline, several environment and version control challenges were resolved:
+
+### 1. Visual Studio UI Rendering (White Text Bug)
+An issue was encountered where Data Flow Path labels (like row counts) rendered as unreadable white text.
+**Fix applied:**
+* Navigated to **Tools > Options > Environment > Fonts and Colors**.
+* Selected **Business Intelligence Designers** from the dropdown.
+* Changed the **Data Flow Path Label** foreground to Black.
+
+![Visual Studio UI Fix](images/Screenshot%202026-03-25%20180529.png)
+
+### 2. Git Merge Conflicts & SSIS Files
+SSIS projects generate many background XML and caching files (`.params`, `.database`) that can cause severe Git conflicts when pulling or merging branches. 
+
+![Git Commit History](images/Screenshot%202026-03-25%20192341.png)
+*Analyzing the divergent branch history prior to resolving conflicts.*
+
+![Git Conflict Resolution](images/Screenshot%202026-03-25%20192347.png)
+*Resolving unmerged changes by selecting 'Keep Local' for SSIS parameter files to maintain the local configuration.*
+
+### 3. The ".vs Folder" Permission Denied Error
+Visual Studio actively locks temporary files inside the hidden `.vs` folder. Trying to commit or push these via Git resulted in a fatal `Permission denied` error.
+
+![Git Permission Error](images/Screenshot%202026-03-25%20192354.png)
+
+**Resolution:**
+1. Closed Visual Studio entirely to release the file locks.
+2. Deleted the hidden `.vs` folder in the project directory.
+3. Re-opened Visual Studio, committed, and pushed successfully.
+
+**Best Practice Applied:** A `.gitignore` file has been implemented in this repository to automatically ignore `.vs/`, `*.user`, and `/bin/` directories, preventing future tracking conflicts.
+
 ---
 
 ## 📂 Repository Structure
