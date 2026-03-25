@@ -22,15 +22,15 @@ The core of the SSIS package is built around a **Foreach Loop Container** that i
     * *No Match / Error Output:* Rows failing conversion or lookup are cleanly redirected to `error_destination_output`.
 
 ### Data Flow Design
-![SSIS Data Flow Design](images/Screenshot%202026-03-25%20172423.png)
+![SSIS Data Flow Design](screenshots/Screenshot%202026-03-25%20172423.png)
 *Above: The core Data Flow showing the Lookup, Derived Column, and OLE DB Destination components.*
 
 ### Error Handling Configuration
-![Error Output Configuration](images/Screenshot%202026-03-25%20175300.png)
+![Error Output Configuration](screenshots/Screenshot%202026-03-25%20175300.png)
 *Above: Configuring component error outputs to redirect rows instead of failing the package.*
 
 ### Successful Execution
-![SSIS Package Success](images/Screenshot%202026-03-25%20180623.png)
+![SSIS Package Success](screenshots/Screenshot%202026-03-25%20180623.png)
 *Above: A successful run of the Foreach Loop Container, processing multiple batches and safely redirecting malformed rows.*
 
 ---
@@ -61,21 +61,21 @@ An issue was encountered where Data Flow Path labels (like row counts) rendered 
 * Selected **Business Intelligence Designers** from the dropdown.
 * Changed the **Data Flow Path Label** foreground to Black.
 
-![Visual Studio UI Fix](images/Screenshot%202026-03-25%20180529.png)
+![Visual Studio UI Fix](screenshots/Screenshot%202026-03-25%20180529.png)
 
 ### 2. Git Merge Conflicts & SSIS Files
 SSIS projects generate many background XML and caching files (`.params`, `.database`) that can cause severe Git conflicts when pulling or merging branches. 
 
-![Git Commit History](images/Screenshot%202026-03-25%20192341.png)
+![Git Commit History](screenshots/Screenshot%202026-03-25%20192341.png)
 *Analyzing the divergent branch history prior to resolving conflicts.*
 
-![Git Conflict Resolution](images/Screenshot%202026-03-25%20192347.png)
+![Git Conflict Resolution](screenshots/Screenshot%202026-03-25%20192347.png)
 *Resolving unmerged changes by selecting 'Keep Local' for SSIS parameter files to maintain the local configuration.*
 
 ### 3. The ".vs Folder" Permission Denied Error
 Visual Studio actively locks temporary files inside the hidden `.vs` folder. Trying to commit or push these via Git resulted in a fatal `Permission denied` error.
 
-![Git Permission Error](images/Screenshot%202026-03-25%20192354.png)
+![Git Permission Error](screenshots/Screenshot%202026-03-25%20192354.png)
 
 **Resolution:**
 1. Closed Visual Studio entirely to release the file locks.
