@@ -21,7 +21,7 @@ The core of the SSIS package is built around a **Foreach Loop Container** that i
 4.  **OLE DB Destinations:** * *Match Output:* Successfully validated rows are inserted into `Fact_Transaction`.
     * *No Match / Error Output:* Rows failing conversion or lookup are cleanly redirected to `error_destination_output`.
 
-![SSIS Data Flow](images/image_a587a5.png)
+![SSIS Data Flow](https://github.com/omar-elsaghir/ssis_telecom_DWH/blob/master/screenshots/Screenshot%202026-03-25%20172423.png)
 *Above: The core Data Flow showing the Lookup, Derived Column, and OLE DB Destination components.*
 
 ---
